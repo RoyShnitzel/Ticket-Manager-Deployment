@@ -8,9 +8,7 @@ function App() {
   const [tickets, setTickets] = useState([]);
   const [displayFavorites, setDisplayFavorites] = useState(false);
   async function getTicketsFromServer() {
-    const { data } = await axios.get('/api/tickets').catch(() => {
-      alert('Tickets Do Not Exist');
-    });
+    const { data } = await axios.get('/api/tickets')
     setTickets(data);
   }
   useEffect(() => {

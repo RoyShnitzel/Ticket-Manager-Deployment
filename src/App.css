@@ -133,8 +133,8 @@ body {
     color: rgb(189, 160, 68);
 }
 
-.fa-times{
-    color: firebrick;
+.hideEye:hover .toolTipFavorite{
+    visibility: visible;
 }
 
 .ticketbody::-webkit-scrollbar {
@@ -222,5 +222,9 @@ body {
  }
 
 .favoritesDisplay:hover .toolTipFavorite {
+    visibility: visible;
+}
+
+.favoriteButton:hover .toolTipFavorite{
     visibility: visible;
 }

@@ -12,12 +12,13 @@ function Ticket(props) {
   return (
     <div className="ticket">
       <button className="favoriteButton" onClick={() => props.favoriteFunc(ticketId, favorite)}>
-        {favorite ? <i className="fa fa-star" aria-hidden="true" /> : <i className="fa fa-star-o" />}
+        {favorite ? <><i className="fa fa-star" aria-hidden="true" /><span className="toolTipFavorite">Remove From Favorites</span></> : 
+        <><i className="fa fa-star-o" /><span className="toolTipFavorite">Add to Favorites</span></>}
       </button>
       <div className="flexheader">
         <div className="ticketheader"><b>{data.title}</b></div>
         <button className="hideTicketButton" id="hideTicketButton" onClick={() => props.hideFunc(ticketId)}>
-          <i className="fa fa-eye-slash fa-lg" aria-hidden="true" />
+          <div className='hideEye'><i className="fa fa-eye-slash fa-lg"/><span className="toolTipFavorite">Hide Ticket</span></div>
         </button>
       </div>
       <div className="ticketbody">{data.content}</div>
