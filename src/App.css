@@ -1,0 +1,226 @@
+.ticket {
+    box-sizing: border-box;
+    width: 50%;
+    border-radius: 15px;
+    margin: 0 10px 10px 10px;
+    padding: 0 10px 0px 0px;
+    font-family:'Exo';
+    background-color: #c0b9b6;
+    position: relative;
+}
+
+.ticketheader {
+    text-shadow: 1.5px 0px whitesmoke;
+    font-size: larger;
+    padding-bottom: 6px;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.ticketbody {
+    padding-left: 10px;
+    margin-bottom: 5px;
+    max-height: 150px;
+    overflow: auto;
+}
+
+.ticketFooter {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(214, 205, 205);
+    width: 100%;
+    padding: 10px 5px 10px 5px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.emailAndTime {
+    padding-left: 10px;
+}
+
+.label1 {
+    box-shadow: 2px 2px rgb(104, 129, 133);
+    border-radius: 10px;
+    background-color: rgb(240, 242, 247);
+    width: fit-content;
+    padding: 3px 6px 3px 6px;
+    margin: 2px 2px 2px 2px;
+    font-size: 1.1em;
+}
+
+.navbar {
+    position: fixed;
+    background-color: #05242e;
+    width: 100%;
+    box-sizing: border-box;
+    top:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75px;
+    font-family:'Exo';
+    z-index: 2;
+}
+
+.search {   
+    margin-left: 20px;
+    margin-top: 5px;
+} 
+
+
+#searchInput {
+    border-radius: 10px;
+    margin-top: 5px;
+    width: 35vh;
+    height: 20px;
+    margin-left: 3px;
+}
+
+#searchInput:focus {
+   outline:none ;
+}
+
+h1 {
+    color: white;
+    font-size: 40px;
+    text-shadow: 2.5px 0px #323e47;
+}
+
+.ticketlist {
+   display: flex;
+   flex-flow: column;
+   align-items: center;
+}
+.ticket .favoriteButton {
+    position: absolute;
+    z-index: 1;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    visibility: hidden;
+    top: 12px;
+    right: 100%;
+    height: 40px;
+    border:none;
+    background-color: rgb(214, 205, 205);
+}
+
+.ticket:hover .favoriteButton {
+    visibility: visible;
+}
+
+.favoriteButton:hover {
+    visibility: visible;
+}
+
+.favoriteButton:focus {
+    outline:none;
+ }
+
+body {
+    background-color: #eee7e7;
+}
+
+.fa-search {
+    color: white;
+}
+.fa-star {
+    color: rgb(189, 160, 68);
+}
+
+.fa-star-o {
+    color: rgb(189, 160, 68);
+}
+
+.fa-times{
+    color: firebrick;
+}
+
+.ticketbody::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 10px;
+  }
+  
+  /* Track */
+  .ticketbody::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  .ticketbody::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  .ticketbody::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+    border-radius: 10px;
+  }
+
+  .hideTicketsCounter {
+    padding-top:90px;
+    padding-bottom: 10px;
+    text-align: center;
+    font-size: smaller;
+    color: gray;
+    font-family:'Exo';
+  }
+
+  #hideTicketButton {
+      background-color: transparent;
+      border: transparent;
+  }
+
+  #hideTicketButton:focus {
+    outline:none ;
+ }
+
+  .flexheader {
+      display: flex;
+      justify-content: space-between;
+  }
+
+  #restoreHideTickets {
+    background-color: transparent;
+    border: transparent;
+    font-family:'Exo';
+    font-weight: bold;
+  }
+
+  #restoreHideTickets:focus {
+    outline:none ;
+ }
+
+ .favoritesDisplay {
+    background-color: transparent;
+    border: transparent;
+    margin-left: 10px;
+    margin-top: 8px;
+    position: relative;
+    display: inline-block;
+ }
+
+ .favoritesDisplay:focus {
+    outline:none ;
+ }
+
+ .toolTipFavorite {
+    visibility: hidden;
+    width: 100px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 3;
+    font-size: smaller;
+    margin-left: 8px;
+ }
+
+.favoritesDisplay:hover .toolTipFavorite {
+    visibility: visible;
+}
