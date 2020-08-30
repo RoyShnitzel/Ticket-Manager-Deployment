@@ -35,10 +35,16 @@ function App() {
     });
   }
 
-  function favoriteTicket(id) {
+  function favoriteTicket(id, favorite) {
     setTickets((prevTickets) => {
       const newTickets = prevTickets.map((ticket) => {
         if (ticket.id === id) {
+          if (favorite){
+          ticket.favorite = false;
+          axios.post(`/api/tickets/favorite/${ticket.id}/${favorite}`)
+          return ticket;
+          }
+          axios.post(`/api/tickets/favorite/${ticket.id}/${favorite}`)
           ticket.favorite = true;
           return ticket;
         }
@@ -46,27 +52,6 @@ function App() {
       });
       return newTickets;
     });
-  }
-
-  function unFavoriteTicket(id) {
-    setTickets((prevTickets) => {
-      const newTickets = prevTickets.map((ticket) => {
-        if (ticket.id === id) {
-          ticket.favorite = false;
-          return ticket;
-        }
-        return ticket;
-      });
-      return newTickets;
-    });
-  }
-
-  function handleFavorite(id, favorite) {
-    if (favorite) {
-      unFavoriteTicket(id);
-    } else {
-      favoriteTicket(id);
-    }
   }
 
   function restoreTickets() {
@@ -107,7 +92,6 @@ function App() {
           )}
         </button>
       </div>
-      {hideCounter > 0 ? (
         <div className="hideTicketsCounter">
           <span>
             Showing
@@ -117,30 +101,25 @@ function App() {
             Results
             {' '}
           </span>
-          <span>(</span>
+          {hideCounter > 0 ? (
+          <>(
           <span id="hideTicketsCounter">
             <b>{hideCounter}</b>
           </span>
-          <span> Hidden Tickets)</span>
+          {' '}
+          Hidden Tickets)
           <button id="restoreHideTickets" onClick={() => restoreTickets()}>
             restore
             {' '}
             <i className="fa fa-undo" aria-hidden="true" />
           </button>
+          </>
+          ) :(null)}
         </div>
-      ) : (
-        <div className="hideTicketsCounter">
-          Showing
-          {' '}
-          <b>{displayFavorites ? favoriteResults : results}</b>
-          {' '}
-          Results
-        </div>
-      )}
       <TicketsList
-        data={displayFavorites ? favoriteTickets : displayedTickets}
+        TicketListData={displayFavorites ? favoriteTickets : displayedTickets}
         hideFunc={hideTicket}
-        favoriteFunc={handleFavorite}
+        favoriteFunc={favoriteTicket}
       />
     </main>
   );

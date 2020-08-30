@@ -14,10 +14,10 @@ function TicketsList(props) {
     ));
     return list;
   }
-  const newData = props.data;
+  const ticketListData = props.TicketListData;
   return (
     <div className="ticketlist">
-      {makeTicketsList(newData)}
+      {makeTicketsList(ticketListData)}
     </div>
   );
 }
