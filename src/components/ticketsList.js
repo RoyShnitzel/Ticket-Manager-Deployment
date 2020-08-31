@@ -5,6 +5,7 @@ function TicketsList(props) {
   function makeTicketsList(data) {
     const list = data.map((ticket) => (
       <Ticket
+        doneFunc={props.doneFunc}
         favoriteFunc={props.favoriteFunc}
         hideFunc={props.hideFunc}
         className="ticket"

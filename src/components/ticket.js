@@ -8,12 +8,17 @@ function Ticket(props) {
   const time = new Date(data.creationTime);
   const newTime = time.toUTCString().replace('GMT', '').slice(4);
   const { favorite } = data;
+  const { done } = data;
 
   return (
     <div className="ticket">
       <button className="favoriteButton" onClick={() => props.favoriteFunc(ticketId, favorite)}>
         {favorite ? <><i className="fa fa-star" aria-hidden="true" /><span className="toolTipFavorite">Remove From Favorites</span></> : 
         <><i className="fa fa-star-o" /><span className="toolTipFavorite">Add to Favorites</span></>}
+      </button>
+      <button className="doneButton" onClick={() => props.doneFunc(ticketId, done)}>
+        {done ? <><i class="fa fa-minus-square" aria-hidden="true"/><span className="toolTipFavorite">Mark Ticket unDone</span></> : 
+        <><i class="fa fa-check-square" aria-hidden="true"/><span className="toolTipFavorite">Mark Ticket Done</span></>}
       </button>
       <div className="flexheader">
         <div className="ticketheader"><b>{data.title}</b></div>
