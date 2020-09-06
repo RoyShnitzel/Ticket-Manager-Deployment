@@ -10,23 +10,32 @@ function App() {
   const [displayFavorites, setDisplayFavorites] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [sort, setSort] = useState(true);
-  const [displayDone, setDisplayDone] = useState(false);
+  const[page,setPage] = useState(1)
+  const [hasMore, setHasMore]= useState(true)
+  const [allTicketsLength, setAllTicketsLength]= useState();
   async function getTicketsFromServer() {
-    const { data } = await axios.get('/api/tickets')
+    const limit = 10;
+    const { data } = displayFavorites !== false? await axios.get(`/api/tickets`):await axios.get(`/api/tickets?page=${page}&limit=${limit}`); 
+    const allTicketsData = await axios.get(`/api/tickets`)
+    setAllTicketsLength(allTicketsData.data.length)
     data.sort((a, b) => (b.creationTime - a.creationTime));
-    setTickets(data);
+    setPage(prevPage=>prevPage + 1); 
+    setTickets(prevData=>[...prevData,...data]);
+    data.length<10? setHasMore(false):displayFavorites !== false? setHasMore(false):setHasMore(true);
   }
   useEffect( () => {
     getTicketsFromServer();
   }, []);
 
   async function searchFunc(val) {
+    const limit = 10;
     const codedVal = encodeURIComponent(val);
-    const { data } = await axios.get(`/api/tickets?searchText=${codedVal}`);
+    const { data } = await axios.get(`/api/tickets?searchText=${codedVal}&page=${val === ''?1:0}&limit=${limit}`);
     data.sort((a, b) => (b.creationTime - a.creationTime));
     setTickets(data);
     setDisplayFavorites(false);
-    setDisplayDone(false)
+    val === ''? setHasMore(true):setHasMore(false)
+    setPage(1)
   }
 
   function hideTicket(id) {
@@ -142,9 +151,9 @@ function App() {
             </>
           )}
         </button>
-        <button onClick={()=>setPopUp(true)} className='newTicketButton'><i class="fa fa-plus-square fa-2x" aria-hidden="true"/>
+        <button onClick={()=>setPopUp(true)} className='newTicketButton'><i className="fa fa-plus-square fa-2x" aria-hidden="true"/>
         <span className="toolTipFavorite">Add New Ticket</span></button>
-        <button onClick={()=> sortTicketsByDate() } className="sortButton"><i class="fa fa-calendar fa-2x" aria-hidden="true"/>
+        <button onClick={()=> sortTicketsByDate() } className="sortButton"><i className="fa fa-calendar fa-2x" aria-hidden="true"/>
         <span className="toolTipFavorite">{sort? 'Sort By Latest Date':'Sort by Date'}</span></button>
       </div>
       {popUp? <NewTicketPopUp func={setPopUp} setTickets={setTickets}/>:null}
@@ -156,6 +165,9 @@ function App() {
             {' '}
             Results
             {' '}
+            out of
+            {' '}
+            <b>{displayFavorites !== false ? displayFavorites === 'favorite'? favoriteResults: doneResults :hasMore? allTicketsLength:results}</b>
           </span>
           {hideCounter > 0 ? (
           <>(
@@ -177,6 +189,9 @@ function App() {
         hideFunc={hideTicket}
         favoriteFunc={favoriteTicket}
         doneFunc={doneTicket}
+        loadMore={getTicketsFromServer}
+        hasMore={hasMore}
+        displayFavorites={displayFavorites}
       />
     </main>
   );

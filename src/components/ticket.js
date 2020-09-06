@@ -18,7 +18,7 @@ function Ticket(props) {
       </button>
       <button className="doneButton" onClick={() => props.doneFunc(ticketId, done)}>
         {done ? <><i class="fa fa-minus-square" aria-hidden="true"/><span className="toolTipFavorite">Mark Ticket unDone</span></> : 
-        <><i class="fa fa-check-square" aria-hidden="true"/><span className="toolTipFavorite">Mark Ticket Done</span></>}
+        <><i className="fa fa-check-square" aria-hidden="true"/><span className="toolTipFavorite">Mark Ticket Done</span></>}
       </button>
       <div className="flexheader">
         <div className="ticketheader"><b>{data.title}</b></div>

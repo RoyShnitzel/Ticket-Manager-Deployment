@@ -6,7 +6,7 @@
     padding: 0 10px 0px 0px;
     font-family:'Exo';
     background-color: #c0b9b6;
-    position: relative;
+    position: relative;    
     min-height: 104px;
     display: flex;
     flex-flow: column;
@@ -162,19 +162,19 @@ body {
 }
 
 .fa-calendar {
-    color: rgb(189, 160, 68);  
+    color:white 
 }
 
 .fa-plus-square {
-    color: rgb(189, 160, 68);  
+    color: white  
 }
 
 .fa-check-square {
-    color: rgb(189, 160, 68);  
+    color: white  
 }
 
 .fa-minus-square {
-    color: rgb(189, 160, 68);  
+    color: white 
 }
 
 .hideEye:hover .toolTipFavorite{
