@@ -36,6 +36,8 @@ app.get('/api/tickets', (request, response) => {
   const tickets = JSON.parse(data);
   const { page } = request.query;
   const { limit } = request.query;
+  const { sort } = request.query;
+  tickets.sort((a, b) => (sort === 'true' ? a.creationTime - b.creationTime : b.creationTime - a.creationTime));
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 

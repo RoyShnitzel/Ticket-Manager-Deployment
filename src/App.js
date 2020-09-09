@@ -7,21 +7,22 @@ import NewTicketPopUp from './components/newTicket';
 
 function App() {
   const [tickets, setTickets] = useState([]);
-  const [displayFavorites, setDisplayFavorites] = useState(false);
+  const [display, setDisplay] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [sort, setSort] = useState(true);
+  const [mainSort, setMainSort] = useState(true);
   const[page,setPage] = useState(1)
   const [hasMore, setHasMore]= useState(true)
-  const [allTicketsLength, setAllTicketsLength]= useState();
+  const [allTickets, setAllTickets]= useState([]);
+  const [valueOfInput,setValueOfInput] = useState('')
   async function getTicketsFromServer() {
     const limit = 10;
-    const { data } = displayFavorites !== false? await axios.get(`/api/tickets`):await axios.get(`/api/tickets?page=${page}&limit=${limit}`); 
+    const { data } = display !== false? await axios.get(`/api/tickets`):await axios.get(`/api/tickets?page=${page}&limit=${limit}&sort=false`); 
     const allTicketsData = await axios.get(`/api/tickets`)
-    setAllTicketsLength(allTicketsData.data.length)
-    data.sort((a, b) => (b.creationTime - a.creationTime));
+    setAllTickets(allTicketsData.data)
     setPage(prevPage=>prevPage + 1); 
     setTickets(prevData=>[...prevData,...data]);
-    data.length<10? setHasMore(false):displayFavorites !== false? setHasMore(false):setHasMore(true);
+    data.length<10? setHasMore(false):display !== false? setHasMore(false):setHasMore(true);
   }
   useEffect( () => {
     getTicketsFromServer();
@@ -33,14 +34,14 @@ function App() {
     const { data } = await axios.get(`/api/tickets?searchText=${codedVal}&page=${val === ''?1:0}&limit=${limit}`);
     data.sort((a, b) => (b.creationTime - a.creationTime));
     setTickets(data);
-    setDisplayFavorites(false);
+    setDisplay(false);
     val === ''? setHasMore(true):setHasMore(false)
-    setPage(1)
+    setPage(2)
   }
 
   function hideTicket(id) {
-    setTickets((prevTickets) => {
-      const newTickets = prevTickets.map((ticket) => {
+    function applyHide (data) {
+      const newTickets = data.map((ticket) => {
         if (ticket.id === id) {
           ticket.hide = true;
           return ticket;
@@ -48,11 +49,20 @@ function App() {
         return ticket;
       });
       return newTickets;
+    };
+    if(display !== false){
+      setAllTickets((prevTickets)=> {
+        return applyHide(prevTickets)
+      })
+    } else {
+    setTickets((prevTickets) => {
+      return applyHide(prevTickets)
     });
+  }
   }
 
   function favoriteTicket(id, favorite) {
-    setTickets((prevTickets) => {
+    setAllTickets((prevTickets) => {
       const newTickets = prevTickets.map((ticket) => {
         if (ticket.id === id) {
           if (favorite){
@@ -68,10 +78,24 @@ function App() {
       });
       return newTickets;
     });
+    setTickets((prevTickets) => {
+      const newTickets = prevTickets.map((ticket) => {
+        if (ticket.id === id) {
+          if (favorite){
+          ticket.favorite = false;
+          return ticket;
+          }
+          ticket.favorite = true;
+          return ticket;
+        }
+        return ticket;
+      });
+      return newTickets;
+    });
   }
 
   function doneTicket(id, done) {
-    setTickets((prevTickets) => {
+    setAllTickets((prevTickets) => {
       const newTickets = prevTickets.map((ticket) => {
         if (ticket.id === id) {
           if (done){
@@ -87,29 +111,73 @@ function App() {
       });
       return newTickets;
     });
-  }
-
-  function restoreTickets() {
     setTickets((prevTickets) => {
       const newTickets = prevTickets.map((ticket) => {
-        ticket.hide = false;
+        if (ticket.id === id) {
+          if (done){
+          ticket.done = false;
+          return ticket;
+          }
+          ticket.done = true;
+          return ticket;
+        }
         return ticket;
       });
       return newTickets;
     });
   }
 
+  function restoreTickets() {
+    function applyRestore(data) {
+      const newTickets = data.map((ticket) => {
+        ticket.hide = false;
+        return ticket;
+      });
+      return newTickets;
+    }
+    if (display !== false){
+      setAllTickets((prevTickets) => {
+        return applyRestore(prevTickets)
+      });
+    } else {
+    setTickets((prevTickets) => {
+      return applyRestore(prevTickets)
+    });
+  }
+  }
+
   function sortTicketsByDate() {
-    const ticketsClone = tickets.slice();
-    ticketsClone.sort((a, b) => (sort ? a.creationTime - b.creationTime : b.creationTime - a.creationTime));
-    setTickets(ticketsClone);
-    setSort(!sort);
+    const ticketsClone = display !== false? allTickets.slice():tickets.slice();
+    ticketsClone.sort((a, b) => {
+      if(display !== false) {
+        if(mainSort){
+          return a.creationTime - b.creationTime
+        } else {
+          return b.creationTime - a.creationTime
+        }
+    } else {
+        if(sort){
+          axios.get(`/api/tickets?page=1&limit=10&sort=true`).then(tickets => {
+            setTickets(tickets.data)
+            tickets.data.length<10? setHasMore(false):setHasMore(true);
+            setPage(2)
+          })
+        } else {
+          axios.get(`/api/tickets?page=1&limit=10&sort=false`).then(tickets => {
+            setTickets(tickets.data)
+            tickets.data.length<10? setHasMore(false):setHasMore(true);
+            setPage(2)
+          })
+        }
+    }});
+    display !== false? setAllTickets(ticketsClone):setTickets(ticketsClone);
+    display !== false? setMainSort(!mainSort):setSort(!sort);
   };
 
-  const displayedTickets = tickets.filter((ticket) => !ticket.hide);
+  const displayedTickets = display !== false?  allTickets.filter((ticket) => !ticket.hide):tickets.filter((ticket) => !ticket.hide);
   const favoriteTickets = displayedTickets.filter((ticket) => Boolean(ticket.favorite));
   const doneTickets = displayedTickets.filter((ticket) => Boolean(ticket.done));
-  const hideCounter = tickets.length - displayedTickets.length;
+  const hideCounter =display !== false?  allTickets.length- displayedTickets.length:tickets.length - displayedTickets.length;
   const results = tickets.length;
   const favoriteResults = favoriteTickets.length;
   const doneResults = doneTickets.length;
@@ -118,12 +186,12 @@ function App() {
     <main className="app">
       <div className="navbar">
         <h1>Tickets Manager</h1>
-        <SearchInput func={searchFunc} />
+        <SearchInput searchFunc={searchFunc} value={valueOfInput} setValue={setValueOfInput} />
         <button
           className="favoritesDisplay"
-          onClick={() => setDisplayFavorites((prevdisplay)=>{if (prevdisplay ==='favorite'){ return false} return 'favorite'})}
+          onClick={() => setDisplay((prevdisplay)=>{if (prevdisplay ==='favorite'){ return false} return 'favorite'})}
         >
-          {displayFavorites === 'favorite'? (
+          {display === 'favorite'? (
             <>
               <i className="fa fa-star fa-2x" />
               <span className="toolTipFavorite">Display All</span>
@@ -137,9 +205,9 @@ function App() {
         </button>
         <button
           className="doneDisplay"
-          onClick={() => setDisplayFavorites((prevdisplay)=>{if (prevdisplay ==='done'){ return false} return 'done'})}
+          onClick={() => setDisplay((prevdisplay)=>{if (prevdisplay ==='done'){ return false} return 'done'})}
         >
-          {displayFavorites === 'done' ? (
+          {display === 'done' ? (
             <>
               <i className="fa fa-minus-square fa-2x" />
               <span className="toolTipFavorite">Display All Tickets</span>
@@ -154,20 +222,22 @@ function App() {
         <button onClick={()=>setPopUp(true)} className='newTicketButton'><i className="fa fa-plus-square fa-2x" aria-hidden="true"/>
         <span className="toolTipFavorite">Add New Ticket</span></button>
         <button onClick={()=> sortTicketsByDate() } className="sortButton"><i className="fa fa-calendar fa-2x" aria-hidden="true"/>
-        <span className="toolTipFavorite">{sort? 'Sort By Latest Date':'Sort by Date'}</span></button>
+        <span className="toolTipFavorite">{'Sort by Date'}</span></button>
       </div>
-      {popUp? <NewTicketPopUp func={setPopUp} setTickets={setTickets}/>:null}
+      {popUp? <NewTicketPopUp setValueOfInput={setValueOfInput} func={setPopUp}
+      setDisplay={setDisplay} setHasMore={setHasMore} setTickets={setTickets} 
+      setPage={setPage} setAllTickets={setAllTickets}/>:null}
         <div className="hideTicketsCounter">
           <span>
             Showing
             {' '}
-            <b>{displayFavorites !== false ? displayFavorites === 'favorite'? favoriteResults: doneResults : results}</b>
+            <b>{display !== false ? display === 'favorite'? favoriteResults: doneResults : results}</b>
             {' '}
             Results
             {' '}
             out of
             {' '}
-            <b>{displayFavorites !== false ? displayFavorites === 'favorite'? favoriteResults: doneResults :hasMore? allTicketsLength:results}</b>
+            <b>{display !== false ? display === 'favorite'? favoriteResults: doneResults :hasMore? allTickets.length:results}</b>
           </span>
           {hideCounter > 0 ? (
           <>(
@@ -185,13 +255,13 @@ function App() {
           ) :(null)}
         </div>
       <TicketsList
-        TicketListData={displayFavorites !== false ? displayFavorites==='favorite'? favoriteTickets: doneTickets : displayedTickets}
+        TicketListData={display !== false ? display==='favorite'? favoriteTickets: doneTickets : displayedTickets}
         hideFunc={hideTicket}
         favoriteFunc={favoriteTicket}
         doneFunc={doneTicket}
         loadMore={getTicketsFromServer}
         hasMore={hasMore}
-        displayFavorites={displayFavorites}
+        display={display}
       />
     </main>
   );

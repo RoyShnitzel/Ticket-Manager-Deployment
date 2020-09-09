@@ -25,7 +25,7 @@ function handleLoad () {
 
   return (
     <div>
-      {props.displayFavorites !== false?
+      {props.display !== false?
       <div className="ticketlist">
       {console.log(ticketListData)}
       {makeTicketsList(ticketListData)}

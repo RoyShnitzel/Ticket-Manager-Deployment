@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function SearchInput(props) {
-  const onSearch = props.func;
+  const onSearch = props.searchFunc;
 
   return (
     <div className="search">
       <i className="fa fa-search" />
-      <input onChange={(e) => onSearch(e.target.value)} id="searchInput" />
+      <input value={props.value} onChange={(e) => {onSearch(e.target.value); props.setValue(e.target.value)}} id="searchInput" />
     </div>
   );
 }

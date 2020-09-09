@@ -17,8 +17,8 @@ function NewTicketPopUp(props) {
           userEmail: emailInput,
           creationTime: `${Date.now()}`,
         };
-        console.log(body)
         const res = await axios({method: 'post', url: '/addticket', data: body});
+        console.log(res.data)
         if (res.data === 'Submitted') {
             setSubmitted(false);
           }
@@ -31,8 +31,8 @@ function NewTicketPopUp(props) {
           creationTime: Date.now(),
           labels: labelsArr,
         };
-        console.log(body)
         const res = await axios.post('/addticket', body);
+        console.log(res.data)
         if (res.data === 'Submitted') {
             setSubmitted(false);
           }
@@ -42,13 +42,20 @@ function NewTicketPopUp(props) {
     useEffect(() => {
         return () => {
           const getTickets = async () => {
-            const { data } = await axios.get('/api/tickets');
-            data.sort((a, b) => (b.creationTime - a.creationTime));
+            const { data } = await axios.get(`/api/tickets?page=1&limit=10&sort=false`);
             props.setTickets(data);
+            const allTicketsData = await axios.get(`/api/tickets`)
+            props.setAllTickets(allTicketsData.data)
+            props.setPage(2)
+            props.setValueOfInput('')
+            data.length<10? props.setHasMore(false):props.setHasMore(true);
+            props.setDisplay(false)
           };
+          if(!submitted){
           getTickets();
+          }
         };
-      },[]);
+      },[submitted]);
 
   return (
      <div className="newTicketPopUp">
